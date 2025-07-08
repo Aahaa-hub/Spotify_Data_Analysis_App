@@ -1,0 +1,4 @@
+spotify.db
+__pycache__/
+*.pyc
+venv/
