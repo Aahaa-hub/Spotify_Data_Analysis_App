@@ -44,3 +44,43 @@ def get_kpis(df):
         fig.patch.set_facecolor('white')
         plt.tight_layout()
         st.pyplot(fig)
+        
+    # ⏱️ Distribution de la Durée des Morceaux
+    st.subheader("⏱️ Distribution de la Durée des Morceaux")
+    durations = df['duration_ms'] / 60000
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.hist(durations, bins=30, color=spotify_green, edgecolor='black')
+    ax.set_xlabel("Durée (minutes)", color=spotify_black)
+    ax.set_ylabel("Nombre de morceaux", color=spotify_black)
+    ax.set_title("Distribution de la Durée des Morceaux Spotify", color=spotify_black)
+    ax.tick_params(axis='x', colors=spotify_black)
+    ax.tick_params(axis='y', colors=spotify_black)
+    fig.patch.set_facecolor('white')
+    plt.tight_layout()
+    st.pyplot(fig)
+
+    # 🎤 Top 10 Artistes les plus prolifiques
+    st.subheader("🎤 Top 10 Artistes les plus prolifiques")
+    if 'artists_clean' not in df.columns:
+        df['artists_clean'] = (
+            df['artists']
+            .astype(str)
+            .str.strip("[]")
+            .str.replace("'", "")
+            .str.split(",")
+            .str[0]
+            .str.strip()
+        )
+
+    top_artists = df['artists_clean'].dropna().value_counts().head(10)
+    if not top_artists.empty:
+        fig, ax = plt.subplots(figsize=(10, 6))
+        top_artists_sorted = top_artists.sort_values(ascending=True)
+        ax.barh(top_artists_sorted.index, top_artists_sorted.values, color=spotify_green)
+        ax.set_xlabel("Nombre de morceaux", color=spotify_black)
+        ax.set_title("Top 10 Artistes les plus prolifiques", color=spotify_black)
+        ax.tick_params(axis='x', colors=spotify_black)
+        ax.tick_params(axis='y', colors=spotify_black)
+        fig.patch.set_facecolor('white')
+        plt.tight_layout()
+        st.pyplot(fig)
