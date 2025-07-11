@@ -84,3 +84,30 @@ def get_kpis(df):
         fig.patch.set_facecolor('white')
         plt.tight_layout()
         st.pyplot(fig)
+
+# 🔬 Clustering K-Means des morceaux
+    st.subheader("🔬 Clustering K-Means des morceaux")
+    if popularity_cols:
+        popularity_col = popularity_cols[0]
+        features = df[['danceability', 'energy', 'loudness', popularity_col]].dropna()
+        scaler = StandardScaler()
+        scaled_features = scaler.fit_transform(features)
+        kmeans = KMeans(n_clusters=4, random_state=42)
+        clusters = kmeans.fit_predict(scaled_features)
+        pca = PCA(n_components=2)
+        pca_result = pca.fit_transform(scaled_features)
+        df['Cluster'] = clusters
+        fig2, ax2 = plt.subplots()
+        scatter = ax2.scatter(
+            pca_result[:, 0], pca_result[:, 1],
+            c=clusters, cmap='viridis', edgecolors='black'
+        )
+        plt.colorbar(scatter)
+        ax2.set_title("Clustering des morceaux Spotify (Projection PCA)", color=spotify_black)
+        ax2.tick_params(axis='x', colors=spotify_black)
+        ax2.tick_params(axis='y', colors=spotify_black)
+        fig2.patch.set_facecolor('white')
+        plt.tight_layout()
+        st.pyplot(fig2)
+    else:
+        st.error("❌ Impossible de trouver la colonne 'popularity' pour le clustering.")
